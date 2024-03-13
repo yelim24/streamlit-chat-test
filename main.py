@@ -57,11 +57,8 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
-    if st.session_state.messages != [] and len(prompt)<10:
-        user_instruction = "(사용자가 대화에 적극적이지 않다면 대화 주제를 변경해주세요)"
-    else:
-        user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"
-    st.session_state.messages.append({"role": "user", "content": prompt+user_instruction})
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    
     with st.chat_message("user"):
         st.markdown(prompt)
 
@@ -75,6 +72,13 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
         ]
         messages.insert(0, {"role": "system", "content": instructions})
 
+        if st.session_state.messages != [] and len(prompt)<10:
+            user_instruction = "(사용자가 대화에 적극적이지 않다면 대화 주제를 변경해주세요)"
+        else:
+            user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"
+        
+        messages[-1] = {"role": "user", "content": prompt + user_instruction}
+        
         stream = client.chat.completions.create(
             model=st.session_state["openai_model"],
             messages=messages,
@@ -85,3 +89,4 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             message_placeholder.markdown(full_response + "▌")
         message_placeholder.markdown(full_response)
     st.session_state.messages.append({"role": "assistant", "content": full_response})
+    
