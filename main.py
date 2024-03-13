@@ -38,7 +38,7 @@ you: 단계: 진행
 
 st.title("🍀고민상담소🍀")
 st.subheader("prompting, finetuning 테스트용 Chatbot입니다")
-st.write("사용자 input과 지시사항을 함께 입력해주세요.\n\(예시\) 퇴사를 당해서 너무 힘들어(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)")
+st.write("사용자 input과 지시사항을 함께 입력해주세요.\n\(예시\) 해고를 당해서 너무 힘들어(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)")
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
