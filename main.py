@@ -42,7 +42,9 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 st.image("test_image.png", width=500)
 
 if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "ft:gpt-3.5-turbo-0125:turingbio::91POc5xt"
+    st.session_state["openai_model"] = "gpt-3.5-turbo"
+# gpt-3.5-turbo
+# ft:gpt-3.5-turbo-0125:turingbio::91POc5xt
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -51,7 +53,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if prompt := st.chat_input("고민상담컴컴"):
+if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
