@@ -65,7 +65,7 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
     #     user_instruction = "(사용자가 대화에 적극적이지 않다면 대화 주제를 변경해주세요)"
     # else:
     #     user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"
-    user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"    
+    user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행하되 사용자가 현재 대화 주제에 관심이 없다면 대화 주제를 간접적으로 변경해주세요)"    
     st.session_state.messages.append({"role": "user", "content": prompt})
     
     with st.chat_message("user"):
