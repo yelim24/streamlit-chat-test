@@ -33,6 +33,10 @@ you: 단계: 진행
 user: 그렇게 생각하면 그렇게 보일 수도 있겠네요. (현재 대화 주제와 [일상생활의 어려움]를 관련지어서 얘기해주세요)
 you: 단계: 진행
 답변: 혹시 일상생활에서 어려움이 있어서 지루하다고 생각되는 것인 아니신가요?
+----
+user: 아니. ([다른사람과의 관계]에 대해 깊은 대화를 진행해주세요)
+you: 단계: 진행
+답변: 아 혹시 다른사람과의 관계가 불편하다거나 한 상황이셔서 지금 상황이 바뀌길 바라시는 줄 알았어요~
 </example>
 """
 
@@ -42,7 +46,7 @@ st.write("테스트 중 이상한 부분이 있다면 저(예림)에게 알려�
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-st.image("test_image.png", width=500)
+# st.image("test_image.png", width=500)
 
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
