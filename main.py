@@ -126,6 +126,10 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             model=st.session_state["openai_model"],
             messages=messages,
             stream=True,
+            temperature=.53,        # .5
+            frequency_penalty=.7,  # .5
+            presence_penalty=.3,   # .3
+            max_tokens=100
         )
         for response in stream:  # pylint: disable=not-an-iterable
             full_response += response.choices[0].delta.content or ""
