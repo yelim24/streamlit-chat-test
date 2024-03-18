@@ -84,7 +84,7 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 # st.image("test_image.png", width=500)
 
 if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "ft:gpt-3.5-turbo-0125:turingbio::92xTWUco"
+    st.session_state["openai_model"] = "ft:gpt-3.5-turbo-0125:turingbio::93waZXFw"
 # gpt-3.5-turbo
 # ft:gpt-3.5-turbo-0125:turingbio::91POc5xt
 
