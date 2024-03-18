@@ -128,7 +128,7 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             stream=True,
             temperature=0,        # .5
             frequency_penalty=.7,  # .5
-            presence_penalty=.1,   # .3
+            presence_penalty=.3,   # .3
         )
         for response in stream:  # pylint: disable=not-an-iterable
             full_response += response.choices[0].delta.content or ""
