@@ -58,7 +58,7 @@ SYSTEM:
 사용자 메세지에 어떻게 답변을 할지 생각합니다.
 그리고 괄호 안의 지시사항을 따라 사용자의 감정 표현을 이끌어낼 수 있는 답변을 생성해주세요.
 답변은 답변: 뒤에 작성합니다.
-한국어로만 답변합니다.
+한국어 존댓말로만 답변합니다.
 
 <example>
 user: 안녕하세요.
@@ -122,8 +122,8 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             model=st.session_state["openai_model"],
             messages=messages,
             stream=True,
-            temperature=0.25,        # .5
-            # frequency_penalty=.5,  # .5
+            temperature=0.2,        # .5
+            frequency_penalty=.5,  # .5
             # presence_penalty=.2,   # .3
         )
         for response in stream:  # pylint: disable=not-an-iterable
