@@ -126,8 +126,16 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             frequency_penalty=.7,  # .5
             # presence_penalty=.2,   # .3
         )
+        
+        dialog_step = ''
+        
         for response in stream:  # pylint: disable=not-an-iterable
-            full_response += response.choices[0].delta.content or ""
+            msg_token = response.choices[0].delta.content
+            msg_split_list = re.split('답변:\s', msg_token)
+            if len(msg_split_list) == 2:
+                dialog_step = msg_split_list[0].split(':')[-1].strip()
+                msg_token = msg_split_list[1]
+            full_response += msg_token or ""
             message_placeholder.markdown(full_response + "▌")
         message_placeholder.markdown(full_response)
     st.session_state.messages.append({"role": "assistant", "content": full_response})
