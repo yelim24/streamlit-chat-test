@@ -131,12 +131,13 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
         dialog_step = ''
         
         for response in stream:  # pylint: disable=not-an-iterable
-            msg_token = str(response.choices[0].delta.content)
-            msg_split_list = re.split('답변:', msg_token)
+            # msg_token = str(response.choices[0].delta.content)
+            # msg_split_list = re.split('답변:', msg_token)
             # if len(msg_split_list) == 2:
             #     dialog_step = msg_split_list[0].split(':')[-1].strip()
             #     msg_token = msg_split_list[1]
-            full_response += msg_token or ""
+            # stream 모드 활성화되어 있기 때문에 위 코드 불가(고민해보기 또는 stream=False)
+            full_response += response.choices[0].delta.content or ""
             message_placeholder.markdown(full_response + "▌")
         message_placeholder.markdown(full_response)
     st.session_state.messages.append({"role": "assistant", "content": full_response})
