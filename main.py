@@ -137,7 +137,15 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             #     dialog_step = msg_split_list[0].split(':')[-1].strip()
             #     msg_token = msg_split_list[1]
             # stream 모드 활성화되어 있기 때문에 위 코드 불가(고민해보기 또는 stream=False)
+            # 일정길이 이상 쌓이지 않으면 출력x?
             full_response += response.choices[0].delta.content or ""
+            if len(full_response) < 11:
+                message_placeholder.markdown("▌")
+            else:
+                msg_split_list = re.split('답변:\s', full_response)
+                if len(msg_split_list) == 2:
+                    dialog_step = msg_split_list[0].split(':')[-1].strip()
+                    full_response = msg_split_list[1]
             message_placeholder.markdown(full_response + "▌")
         message_placeholder.markdown(full_response)
     st.session_state.messages.append({"role": "assistant", "content": full_response})
