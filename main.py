@@ -136,12 +136,11 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             if len(msg_split_list) == 2:
                 dialog_step = msg_split_list[0].split(':')[-1].strip()
                 full_response = msg_split_list[1]
-                message_placeholder.markdown(full_response + "▌")
 
             if dialog_step != '':
                 message_placeholder.markdown(full_response + "▌")
-            else:
-                message_placeholder.markdown(' ' +"▌")
+            # else:
+            #     message_placeholder.markdown(' ' +"▌")
             
             
             
