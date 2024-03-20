@@ -133,7 +133,7 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
         for response in stream:  # pylint: disable=not-an-iterable
             full_response += response.choices[0].delta.content or ""
             
-            if '답변:' in response:
+            if '답변:' in full_response:
                 msg_split_list = re.split('답변:\s', full_response)
                 dialog_step = msg_split_list[0].split(':')[-1].strip()
                 full_response = msg_split_list[1]
