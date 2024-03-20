@@ -120,28 +120,21 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
         
         messages[-1] = {"role": "user", "content": prompt + user_instruction}
         
-        stream = client.chat.completions.create(
+        response = client.chat.completions.create(
             model=st.session_state["openai_model"],
             messages=messages,
-            stream=True,
             temperature=0.2,        # .5
             frequency_penalty=.7,  # .5
             # presence_penalty=.2,   # .3
         )
+        bot_response = response.choices[0].message.content
+        bot_response_list = re.split('답변:\s', full_response)
+        dialog_step = bot_response_list[0].split(':')[-1].strip()
+        bot_response = bot_response_list[1]
         
-        dialog_step = ''
+        for char in bot_response:
+            message_placeholder.markdown(char + "▌")
         
-        for response in stream:  # pylint: disable=not-an-iterable
-            full_response += response.choices[0].delta.content or ""
-            msg_split_list = re.split('답변:\s', full_response)
-            if len(msg_split_list) == 2:
-                dialog_step = msg_split_list[0].split(':')[-1].strip()
-                full_response = msg_split_list[1]
-            time.sleep(0.1)
-            if dialog_step != '':
-                message_placeholder.markdown(full_response + "▌")
-            
-            
             
             # if len(msg_split_list) == 2:
             #     dialog_step = msg_split_list[0].split(':')[-1].strip()
@@ -161,6 +154,6 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             #         full_response = msg_split_list[1]
             #         message_placeholder.markdown(full_response + "▌")
                 
-        message_placeholder.markdown(full_response)
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
+        message_placeholder.markdown(bot_response)
+    st.session_state.messages.append({"role": "assistant", "content": bot_response})
     
