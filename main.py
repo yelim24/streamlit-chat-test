@@ -128,7 +128,7 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             # presence_penalty=.2,   # .3
         )
         bot_response = response.choices[0].message.content
-        bot_response_list = re.split('답변:\s', full_response)
+        bot_response_list = re.split('답변:\s', bot_response)
         dialog_step = bot_response_list[0].split(':')[-1].strip()
         bot_response = bot_response_list[1]
         
