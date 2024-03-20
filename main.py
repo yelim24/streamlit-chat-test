@@ -131,16 +131,9 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
         dialog_step = ''
         
         for response in stream:  # pylint: disable=not-an-iterable
-            # msg_token = str(response.choices[0].delta.content)
-            # msg_split_list = re.split('답변:', msg_token)
-            # if len(msg_split_list) == 2:
-            #     dialog_step = msg_split_list[0].split(':')[-1].strip()
-            #     msg_token = msg_split_list[1]
-            # stream 모드 활성화되어 있기 때문에 위 코드 불가(고민해보기 또는 stream=False)
-            # 일정길이 이상 쌓이지 않으면 출력x?
             full_response += response.choices[0].delta.content or ""
             
-            if full_response in '답변:':
+            if '답변:' in response:
                 msg_split_list = re.split('답변:\s', full_response)
                 dialog_step = msg_split_list[0].split(':')[-1].strip()
                 full_response = msg_split_list[1]
