@@ -1,6 +1,8 @@
 from openai import OpenAI
 import streamlit as st
 import re
+import time
+
 
 # instructions = """
 # SYSTEM:
@@ -140,6 +142,7 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             # 일정길이 이상 쌓이지 않으면 출력x?
             full_response += response.choices[0].delta.content or ""
             msg_split_list = re.split('답변:\s', full_response)
+            time.sleep(0.5)
             if len(msg_split_list) == 2:
                 dialog_step = msg_split_list[0].split(':')[-1].strip()
                 full_response = msg_split_list[1]
