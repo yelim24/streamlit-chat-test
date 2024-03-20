@@ -147,7 +147,7 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             elif len(dialog_step) > 0:
                 message_placeholder.markdown(full_response + "▌")
             else:
-                message_placeholder.markdown('' +"▌")
+                message_placeholder.markdown(' ' +"▌")
             
             # if len(full_response) < 11:
             #     message_placeholder.markdown("▌")
