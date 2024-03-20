@@ -133,15 +133,13 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
         
         for response in stream:  # pylint: disable=not-an-iterable
             full_response += response.choices[0].delta.content or ""
-            msg_split_list = re.split('답변:\s', str(full_response))
+            msg_split_list = re.split('답변:\s', full_response)
             if len(msg_split_list) == 2:
                 dialog_step = msg_split_list[0].split(':')[-1].strip()
                 full_response = msg_split_list[1]
             time.sleep(0.1)
             if dialog_step != '':
                 message_placeholder.markdown(full_response + "▌")
-            # else:
-            #     message_placeholder.markdown(' ' +"▌")
             
             
             
