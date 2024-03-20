@@ -87,8 +87,6 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "ft:gpt-3.5-turbo-0125:turingbio::92xTWUco"
-# gpt-3.5-turbo
-# ft:gpt-3.5-turbo-0125:turingbio::91POc5xt
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -98,11 +96,8 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
-    # if st.session_state.messages != [] and len(prompt)<8:
-    #     user_instruction = "(사용자가 대화에 적극적이지 않다면 대화 주제를 변경해주세요)"
-    # else:
-    #     user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"
-    user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"    
+    if st.session_state.messages != []:
+        user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"    
     st.session_state.messages.append({"role": "user", "content": prompt})
     
     with st.chat_message("user"):
@@ -133,32 +128,12 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             dialog_step = bot_response_list[0].split(':')[-1].strip()
             bot_response = bot_response_list[1]
         
-        text = ''
-        
+        chars = ''
         for char in bot_response:
-            time.sleep(0.05)
-            text += char
-            message_placeholder.markdown(text + "▌")
-        
-            
-            # if len(msg_split_list) == 2:
-            #     dialog_step = msg_split_list[0].split(':')[-1].strip()
-            #     full_response = msg_split_list[1]
-            #     message_placeholder.markdown(full_response + "▌")
-            # elif dialog_step != '':
-            #     message_placeholder.markdown(full_response + "▌")
-            # else:
-            #     message_placeholder.markdown(' ' +"▌")
-            
-            # if len(full_response) < 11:
-            #     message_placeholder.markdown("▌")
-            # else:
-            #     msg_split_list = re.split('답변:\s', full_response)
-            #     if len(msg_split_list) == 2:
-            #         dialog_step = msg_split_list[0].split(':')[-1].strip()
-            #         full_response = msg_split_list[1]
-            #         message_placeholder.markdown(full_response + "▌")
-                
+            time.sleep(0.001)
+            chars += char
+            message_placeholder.markdown(chars + "▌")
+
         message_placeholder.markdown(bot_response)
     st.session_state.messages.append({"role": "assistant", "content": bot_response})
     
