@@ -162,6 +162,6 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
             #         full_response = msg_split_list[1]
             #         message_placeholder.markdown(full_response + "▌")
                 
-        message_placeholder.markdown(full_response)
+        message_placeholder.markdown('마지막')
     st.session_state.messages.append({"role": "assistant", "content": full_response})
     
