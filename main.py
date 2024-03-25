@@ -98,7 +98,7 @@ for message in st.session_state.messages:
 if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
     user_instruction = ''
     if st.session_state.messages != []:
-        user_instruction = "(현재 주제와 [다른사람과의 관계]를 간접적으로 관련지어서 얘기해주세요)"
+        user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"
     st.session_state.messages.append({"role": "user", "content": prompt})
     
     with st.chat_message("user"):
