@@ -116,39 +116,25 @@ if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
         
         messages[-1] = {"role": "user", "content": prompt + user_instruction}
         
-    #     response = client.chat.completions.create(
-    #         model=st.session_state["openai_model"],
-    #         messages=messages,
-    #         temperature=0.2,        # .5
-    #         frequency_penalty=.7,  # .5
-    #         # presence_penalty=.2,   # .3
-    #     )
-    #     bot_response = response.choices[0].message.content
-    #     bot_response_list = re.split('답변:\s', bot_response)
-    #     if len(bot_response_list)>1:
-    #         dialog_step = bot_response_list[0].split(':')[-1].strip()
-    #         bot_response = bot_response_list[1]
-        
-    #     chars = ''
-    #     for char in bot_response:
-    #         time.sleep(0.001)
-    #         chars += char
-    #         message_placeholder.markdown(chars + "▌")
-
-    #     message_placeholder.markdown(bot_response)
-    # st.session_state.messages.append({"role": "assistant", "content": bot_response})
-
-        stream = client.chat.completions.create(
+        response = client.chat.completions.create(
             model=st.session_state["openai_model"],
             messages=messages,
-            stream=True,
             temperature=0.2,        # .5
             frequency_penalty=.7,  # .5
             # presence_penalty=.2,   # .3
         )
-        for response in stream:  # pylint: disable=not-an-iterable
-            full_response += response.choices[0].delta.content or ""
-            message_placeholder.markdown(full_response + "▌")
-        message_placeholder.markdown(full_response)
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
-    
+        bot_response = response.choices[0].message.content
+        bot_response_list = re.split('답변:\s', bot_response)
+        if len(bot_response_list)>1:
+            dialog_step = bot_response_list[0].split(':')[-1].strip()
+            bot_response = bot_response_list[1]
+        
+        chars = ''
+        for char in bot_response:
+            time.sleep(0.001)
+            chars += char
+            message_placeholder.markdown(chars + "▌")
+
+        message_placeholder.markdown(bot_response)
+    st.session_state.messages.append({"role": "assistant", "content": bot_response})
+
