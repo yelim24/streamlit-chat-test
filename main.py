@@ -51,10 +51,9 @@ questions = [
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-menu_list = option_menu(None, ["Chat", "BDI-II", "Result", 'Database'], 
-    icons=['chat-left-dots', 'clipboard-check', "file-earmark-bar-graph", 'database'],
-    # https://icons.getbootstrap.com/
-    menu_icon="cast", default_index=0, orientation="horizontal")
+with st.sidebar:
+    menu_list = option_menu("Menu", ["Chat", "BDI-II", "Result", 'Database'], 
+        icons=['chat-left-dots', 'clipboard-check', "file-earmark-bar-graph", 'database'], default_index=0)
 
 if menu_list == "Chat":
 
