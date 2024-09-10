@@ -1,46 +1,12 @@
-from openai import OpenAI
 import streamlit as st
+from streamlit_option_menu import option_menu
+import os
 import re
 import time
+import pandas as pd
+import numpy as np
+from openai import OpenAI
 
-# instructions = """
-# SYSTEM:
-# You are a mental health counselor.
-# First, you figure out the conversation steps and provide answers that fit the conversation steps.
-# Then, You keep user's instruction inside the parentheses.
-# And give encouragement, sympathy, comfort, advice and questions to user in a friendly manner.
-# Please do not directly mention user's instruction inside the parentheses.
-
-# Conversation steps are 종료 and 진행.
-# - 종료: the end of the conversation
-# - 진행: All steps other than the end of the conversation
-
-# [INST]
-# With the guidelines given above,
-# first classify the stages of conversation from the user's utterances.
-# Think about how to answer to the user's utterance.
-# Then, step by step, generate short answers that can elicit the user's emotional expression according to the instruction inside the parentheses.
-# Write the answer between after 답변:.
-# You answers in KOREAN.
-
-# <example>
-# user: 안녕하세요.
-# you: 단계: 진행
-# 답변: 안녕하세요! 오늘 하루는 어떤 일들이 있으셨나요?
-# ----
-# user: 요즘에는 별다른 일이 없어서 그런지 뭔가 지루하다는 느낌이 들어요.(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)
-# you: 단계: 진행
-# 답변: 지루하지만 한편으로는 평안하지 않으세요? 전 별다른 일이 없다는 게 한편으로는 좋아보여요!
-# ----
-# user: 그렇게 생각하면 그렇게 보일 수도 있겠네요. (현재 대화 주제와 [일상생활의 어려움]를 관련지어서 얘기해주세요)
-# you: 단계: 진행
-# 답변: 혹시 일상생활에서 어려움이 있어서 지루하다고 생각되는 것인 아니신가요?
-# ----
-# user: 아니. ([다른사람과의 관계]에 대해 깊은 대화를 진행해주세요)
-# you: 단계: 진행
-# 답변: 아 혹시 다른사람과의 관계가 불편하다거나 한 상황이셔서 지금 상황이 바뀌길 바라시는 줄 알았어요~
-# </example>
-# """
 
 instructions = """
 SYSTEM:
@@ -77,64 +43,90 @@ you: 단계: 진행
 </example>
 """
 
-st.title("🍀고민상담소🍀")
-st.subheader("prompting, finetuning 테스트용 Chatbot입니다")
-st.write("테스트 중 이상한 부분이 있다면 저(예림)에게 알려주세요")
+questions = [
+    "Q1. 첫 번째 질문",
+    "Q2. 두 번째 질문",
+    "Q3. 세 번째 질문",
+]
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+api_key = os.getenv("OPENAI_API_KEY")
+if api_key is None:
+    raise ValueError("API key not found in environment variables.")
+client = OpenAI(api_key=api_key)
 
-# st.image("test_image.png", width=500)
+menu_list = option_menu(None, ["Chat", "BDI-II", "Result", 'Database'], 
+    icons=['chat-left-dots', 'clipboard-check', "file-earmark-bar-graph", 'database'],
+    # https://icons.getbootstrap.com/
+    menu_icon="cast", default_index=0, orientation="horizontal")
 
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "ft:gpt-3.5-turbo-0125:turingbio::92xTWUco"
+if menu_list == "Chat":
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+    if "openai_model" not in st.session_state:
+        st.session_state["openai_model"] = "ft:gpt-3.5-turbo-0125:turingbio::92xTWUco"
 
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
 
-if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
-    user_instruction = ''
-    if st.session_state.messages != []:
-        user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
+        user_instruction = ''
+        if st.session_state.messages != []:
+            user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        with st.chat_message("assistant"):
+            message_placeholder = st.empty()
+            full_response = ""
+
+            messages = [
+                {"role": m["role"], "content": m["content"]}
+                for m in st.session_state.messages
+            ]
+            messages.insert(0, {"role": "system", "content": instructions})
+            
+            messages[-1] = {"role": "user", "content": prompt + user_instruction}
+            
+            response = client.chat.completions.create(
+                model=st.session_state["openai_model"],
+                messages=messages,
+                temperature=0.2,        # .5
+                frequency_penalty=.7,  # .5
+                # presence_penalty=.2,   # .3
+            )
+            bot_response = response.choices[0].message.content
+            bot_response_list = re.split(r'답변:\s', bot_response)
+            if len(bot_response_list)>1:
+                dialog_step = bot_response_list[0].split(':')[-1].strip()
+                bot_response = bot_response_list[1]
+            
+            chars = ''
+            for char in bot_response:
+                time.sleep(0.001)
+                chars += char
+                message_placeholder.markdown(chars + "▌")
+
+            message_placeholder.markdown(bot_response)
+        st.session_state.messages.append({"role": "assistant", "content": bot_response})
+            
+elif menu_list == "BDI-II":
+
+    st.write("BDI-II는 우울 정도를 측정하는 데 사용되는 21개의 객관식 질문으로 구성된 자가보고 설문지입니다.")
+    st.write("지난 2주 동안의 기분과 상태를 생각해 보시고, 이를 가장 잘 설명하는 문장의 번호에 표시해주세요.")
     
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-        full_response = ""
-
-        messages = [
-            {"role": m["role"], "content": m["content"]}
-            for m in st.session_state.messages
-        ]
-        messages.insert(0, {"role": "system", "content": instructions})
-        
-        messages[-1] = {"role": "user", "content": prompt + user_instruction}
-        
-        response = client.chat.completions.create(
-            model=st.session_state["openai_model"],
-            messages=messages,
-            temperature=0.2,        # .5
-            frequency_penalty=.7,  # .5
-            # presence_penalty=.2,   # .3
-        )
-        bot_response = response.choices[0].message.content
-        bot_response_list = re.split('답변:\s', bot_response)
-        if len(bot_response_list)>1:
-            dialog_step = bot_response_list[0].split(':')[-1].strip()
-            bot_response = bot_response_list[1]
-        
-        chars = ''
-        for char in bot_response:
-            time.sleep(0.001)
-            chars += char
-            message_placeholder.markdown(chars + "▌")
-
-        message_placeholder.markdown(bot_response)
-    st.session_state.messages.append({"role": "assistant", "content": bot_response})
-
+    options = ["1: 거의 그렇지 않거나 아니다", "2: 가끔 그렇다", "3: 자주 그렇다", "4: 항상 그렇다"]
+    responses = [st.radio(question, options, key=f"question_{i+1}") for i, question in enumerate(questions)]
+    
+elif menu_list == "Result":
+    st.write("지금까지의 감정 그래프를 보여드리겠습니다.")
+    chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
+    st.line_chart(chart_data)
+    st.bar_chart(chart_data)
+    
+elif menu_list == "Database":
+    st.write("Database 페이지")
