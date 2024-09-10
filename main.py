@@ -49,10 +49,7 @@ questions = [
     "Q3. 세 번째 질문",
 ]
 
-api_key = os.getenv("OPENAI_API_KEY")
-if api_key is None:
-    raise ValueError("API key not found in environment variables.")
-client = OpenAI(api_key=api_key)
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 menu_list = option_menu(None, ["Chat", "BDI-II", "Result", 'Database'], 
     icons=['chat-left-dots', 'clipboard-check', "file-earmark-bar-graph", 'database'],
