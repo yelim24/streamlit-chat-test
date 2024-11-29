@@ -52,11 +52,11 @@ st.markdown("""
     div:has(>a[href="https://share.streamlit.io/user/yelim24"]) { 
         display: none;
     }
-    div.stMainBlockContainer {
-      height: 100% !important;
-      display: flex !important;
-      flex-direction: column-reverse !important;
-    }
+    # div.stMainBlockContainer {
+    #   height: 100% !important;
+    #   display: flex !important;
+    #   flex-direction: column-reverse !important;
+    # }
     # div:has([data-testid="stChatMessageAvatarAssistant"]) {
     #   flex-direction: row-reverse !important;
     # }
