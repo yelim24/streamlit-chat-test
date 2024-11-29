@@ -43,14 +43,18 @@ you: 단계: 진행
 </example>
 """
 
-# 여기에 st.markdown으로 시작하는 스타일 코드를 넣으세요
+# 스타일링 추가
 st.markdown("""
 <style>
-  .stAppHeader, div[data-testid="stSidebarCollapsedControl"] {      display: none !important;    }    
-  div.stMainBlockContainer.block-container {      height: 100%;      display: flex;      flex-direction: column-reverse;    }    
-  div:has(div[data-testid="stChatMessageAvatarAssistant"]) {      flex-direction: row-reverse;    } 
+    .stAppHeader, 
+    div[data-testid="stSidebarCollapsedControl"], 
+    a[href="https://streamlit.io/cloud"],
+    div:has(a[href="https://share.streamlit.io/user/yelim24"]) { 
+        display: none;
+    }
 </style>
 """, unsafe_allow_html=True)
+# 스타일링 끝
 
 st.title("🍀챗봇🍀")
 st.subheader("테스트용 Chatbot입니다")
