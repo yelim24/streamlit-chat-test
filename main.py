@@ -43,86 +43,64 @@ you: 단계: 진행
 </example>
 """
 
-questions = [
-    "Q1. 첫 번째 질문",
-    "Q2. 두 번째 질문",
-    "Q3. 세 번째 질문",
-]
+st.title("🍀테스트용 챗봇🍀")
+st.subheader("테스트용 Chatbot입니다")
+st.write("테스트 중 이상한 부분이 있다면 저(예림)에게 알려주세요")
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-with st.sidebar:
-    menu_list = option_menu("Menu", ["Chat", "BDI-II", "Result", 'Database'], 
-        icons=['chat-left-dots', 'clipboard-check', "file-earmark-bar-graph", 'database'], default_index=0)
+if "openai_model" not in st.session_state:
+    st.session_state["openai_model"] = "gpt-4o-mini"
 
-if menu_list == "Chat":
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-    if "openai_model" not in st.session_state:
-        st.session_state["openai_model"] = "ft:gpt-3.5-turbo-0125:turingbio::92xTWUco"
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
+    user_instruction = ''
+    if st.session_state.messages != []:
+        # user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"
+        user_instruction = ""
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        full_response = ""
 
-    if prompt := st.chat_input("당신의 고민을 말씀해주세요"):
-        user_instruction = ''
-        if st.session_state.messages != []:
-            user_instruction = "(사용자가 적극적으로 표현할 수 있도록 대화를 진행해주세요)"
-        st.session_state.messages.append({"role": "user", "content": prompt})
+        messages = [
+            {"role": m["role"], "content": m["content"]}
+            for m in st.session_state.messages
+        ]
+        messages.insert(0, {"role": "system", "content": instructions})
         
-        with st.chat_message("user"):
-            st.markdown(prompt)
+        messages[-1] = {"role": "user", "content": prompt + user_instruction}
+        
+        response = client.chat.completions.create(
+            model=st.session_state["openai_model"],
+            messages=messages,
+            temperature=0.2,        # .5
+            frequency_penalty=.7,  # .5
+            # presence_penalty=.2,   # .3
+        )
+        
+        bot_response = response.choices[0].message.content
+        bot_response_list = re.split('답변:\s', bot_response)
+        if len(bot_response_list)>1:
+            dialog_step = bot_response_list[0].split(':')[-1].strip()
+            bot_response = bot_response_list[1]
+        
+        chars = ''
+        for char in bot_response:
+            time.sleep(0.001)
+            chars += char
+            message_placeholder.markdown(chars + "▌")
 
-        with st.chat_message("assistant"):
-            message_placeholder = st.empty()
-            full_response = ""
-
-            messages = [
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ]
-            messages.insert(0, {"role": "system", "content": instructions})
+        message_placeholder.markdown(bot_response)
             
-            messages[-1] = {"role": "user", "content": prompt + user_instruction}
-            
-            response = client.chat.completions.create(
-                model=st.session_state["openai_model"],
-                messages=messages,
-                temperature=0.2,        # .5
-                frequency_penalty=.7,  # .5
-                # presence_penalty=.2,   # .3
-            )
-            bot_response = response.choices[0].message.content
-            bot_response_list = re.split(r'답변:\s', bot_response)
-            if len(bot_response_list)>1:
-                dialog_step = bot_response_list[0].split(':')[-1].strip()
-                bot_response = bot_response_list[1]
-            
-            chars = ''
-            for char in bot_response:
-                time.sleep(0.001)
-                chars += char
-                message_placeholder.markdown(chars + "▌")
-
-            message_placeholder.markdown(bot_response)
-        st.session_state.messages.append({"role": "assistant", "content": bot_response})
-            
-elif menu_list == "BDI-II":
-
-    st.write("BDI-II는 우울 정도를 측정하는 데 사용되는 21개의 객관식 질문으로 구성된 자가보고 설문지입니다.")
-    st.write("지난 2주 동안의 기분과 상태를 생각해 보시고, 이를 가장 잘 설명하는 문장의 번호에 표시해주세요.")
-    
-    options = ["1: 거의 그렇지 않거나 아니다", "2: 가끔 그렇다", "3: 자주 그렇다", "4: 항상 그렇다"]
-    responses = [st.radio(question, options, key=f"question_{i+1}") for i, question in enumerate(questions)]
-    
-elif menu_list == "Result":
-    st.write("지금까지의 감정 그래프를 보여드리겠습니다.")
-    chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
-    st.line_chart(chart_data)
-    st.bar_chart(chart_data)
-    
-elif menu_list == "Database":
-    st.write("Database 페이지")
+    st.session_state.messages.append({"role": "assistant", "content": bot_response})
