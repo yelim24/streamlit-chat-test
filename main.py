@@ -60,10 +60,6 @@ st.markdown("""
     div:has([data-testid="stChatMessageAvatarAssistant"]) {
       flex-direction: row-reverse !important;
     }
-
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 # 스타일링 끝
