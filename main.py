@@ -43,7 +43,7 @@ you: 단계: 진행
 </example>
 """
 
-st.title("🍀테스트용 챗봇🍀")
+st.title("🍀챗봇🍀")
 st.subheader("테스트용 Chatbot입니다")
 st.write("테스트 중 이상한 부분이 있다면 저(예림)에게 알려주세요")
 
