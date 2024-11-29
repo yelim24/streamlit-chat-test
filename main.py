@@ -44,35 +44,28 @@ you: 단계: 진행
 """
 
 # 스타일링 추가
-# st.markdown("""
-# <style>
-#     .stAppHeader, 
-#     div[data-testid="stSidebarCollapsedControl"], 
-#     a[href="https://streamlit.io/cloud"],
-#     div:has(>a[href="https://share.streamlit.io/user/yelim24"]) { 
-#         display: none;
-#     }
-#     div.stMainBlockContainer {
-#       height: 100% !important;
-#       display: flex !important;
-#       flex-direction: column-reverse !important;
-#     }
-#     div:has([data-testid="stChatMessageAvatarAssistant"]) {
-#       flex-direction: row-reverse !important;
-#     }
-# </style>
-# """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+    .stAppHeader, 
+    div[data-testid="stSidebarCollapsedControl"], 
+    a[href="https://streamlit.io/cloud"],
+    div:has(>a[href="https://share.streamlit.io/user/yelim24"]) { 
+        display: none;
+    }
+    div.stMainBlockContainer {
+      height: 100% !important;
+      display: flex !important;
+      flex-direction: column-reverse !important;
+    }
+    div:has([data-testid="stChatMessageAvatarAssistant"]) {
+      flex-direction: row-reverse !important;
+    }
 
-
-
-hide_st_style = “”"
-
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
-
-“”"
-st.markdown(hide_st_style, unsafe_allow_html=True)
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+</style>
+""", unsafe_allow_html=True)
 # 스타일링 끝
 
 st.title("🍀챗봇🍀")
