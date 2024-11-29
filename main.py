@@ -62,6 +62,20 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+
+
+st.markdown("""
+<style>
+    .streamlit-community-cloud-badge {
+        display: none !important;
+    }
+    
+    div:has(>.streamlit-community-cloud-badge) {
+        display: none !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 # 스타일링 끝
 
 st.title("🍀챗봇🍀")
