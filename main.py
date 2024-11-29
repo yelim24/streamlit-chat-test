@@ -57,9 +57,9 @@ st.markdown("""
     #   display: flex !important;
     #   flex-direction: column-reverse !important;
     # }
-    # div:has([data-testid="stChatMessageAvatarAssistant"]) {
-    #   flex-direction: row-reverse !important;
-    # }
+    div:has([data-testid="stChatMessageAvatarAssistant"]) {
+      flex-direction: row-reverse !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
