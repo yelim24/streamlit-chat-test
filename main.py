@@ -43,6 +43,15 @@ you: 단계: 진행
 </example>
 """
 
+# 여기에 st.markdown으로 시작하는 스타일 코드를 넣으세요
+st.markdown("""
+<style>
+  .stAppHeader, div[data-testid="stSidebarCollapsedControl"] {      display: none !important;    }    
+  div.stMainBlockContainer.block-container {      height: 100%;      display: flex;      flex-direction: column-reverse;    }    
+  div:has(div[data-testid="stChatMessageAvatarAssistant"]) {      flex-direction: row-reverse;    } 
+</style>
+""", unsafe_allow_html=True)
+
 st.title("🍀챗봇🍀")
 st.subheader("테스트용 Chatbot입니다")
 st.write("테스트 중 이상한 부분이 있다면 저(예림)에게 알려주세요")
